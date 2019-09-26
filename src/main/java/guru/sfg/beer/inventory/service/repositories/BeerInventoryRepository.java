@@ -28,5 +28,5 @@ import guru.sfg.beer.inventory.service.domain.BeerInventory;
  */
 public interface BeerInventoryRepository extends JpaRepository<BeerInventory, UUID> {
 
-    List<BeerInventory> findAllByBeerId(UUID beerId);
+    List<BeerInventory> findByUpc(String upc);
 }

@@ -1,7 +1,6 @@
 package guru.sfg.beer.inventory.service.web.controllers;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,11 +24,21 @@ public class BeerInventoryController {
     private final BeerInventoryRepository beerInventoryRepository;
     private final BeerInventoryMapper beerInventoryMapper;
 
-    @GetMapping("api/v1/beer/{beerId}/inventory")
-    List<BeerInventoryDto> listBeersById(@PathVariable UUID beerId){
-        log.debug("Finding Inventory for beerId:" + beerId);
+    @GetMapping("api/v1/beer/{upc}/inventory")
+    List<BeerInventoryDto> listBeersByUpc(@PathVariable String upc){
+        log.debug("Finding Inventory for upc:" + upc);
 
-        return beerInventoryRepository.findAllByBeerId(beerId)
+        return beerInventoryRepository.findByUpc(upc)
+                .stream()
+                .map(beerInventoryMapper::beerInventoryToBeerInventoryDto)
+                .collect(Collectors.toList());
+    }
+    
+    @GetMapping("api/v1/beer/inventory")
+    List<BeerInventoryDto> listAllBeers(){
+        log.debug("Finding All Inventory");
+
+        return beerInventoryRepository.findAll()
                 .stream()
                 .map(beerInventoryMapper::beerInventoryToBeerInventoryDto)
                 .collect(Collectors.toList());

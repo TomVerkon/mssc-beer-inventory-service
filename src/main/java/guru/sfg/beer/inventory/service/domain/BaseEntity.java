@@ -17,17 +17,16 @@
 package guru.sfg.beer.inventory.service.domain;
 
 import java.sql.Timestamp;
-import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Version;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import lombok.Getter;
@@ -44,22 +43,18 @@ import lombok.Setter;
 @MappedSuperclass
 public class BaseEntity {
 
-    public BaseEntity(UUID id, Long version, Timestamp createdDate, Timestamp lastModifiedDate) {
-        this.id = id;
-        this.version = version;
-        this.createdDate = createdDate;
-        this.lastModifiedDate = lastModifiedDate;
+    public BaseEntity(Long id, Long version, Timestamp createdDate, Timestamp lastModifiedDate) {
+	this.id = id;
+	this.version = version;
+	this.createdDate = createdDate;
+	this.lastModifiedDate = lastModifiedDate;
     }
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
-    @Type(type="org.hibernate.type.UUIDCharType")
-    @Column(length = 36, columnDefinition = "varchar(36)", updatable = false, nullable = false )
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "inventory_generator")
+    @SequenceGenerator(name = "inventory_generator", sequenceName = "inventory_seq", allocationSize = 50)
+    @Column(name = "id", updatable = false, nullable = false)
+    private Long id;
 
     @Version
     private Long version;
@@ -72,6 +67,6 @@ public class BaseEntity {
     private Timestamp lastModifiedDate;
 
     public boolean isNew() {
-        return this.id == null;
+	return this.id == null;
     }
 }
