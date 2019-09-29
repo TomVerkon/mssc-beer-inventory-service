@@ -5,17 +5,21 @@ import org.springframework.jms.support.converter.MappingJackson2MessageConverter
 import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.jms.support.converter.MessageType;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @Configuration
 public class JMSConfig {
     
     public static final String MY_QUEUE = "my-hello-world";
     public static final String MY_SEND_RCV_QUEUE = "my-send-recv";
+    public static final String NEW_INVENTORY_QUEUE = "new-inventory";
     
     @Bean
-    MessageConverter messageConverter() {
+    MessageConverter messageConverter(ObjectMapper mapper) {
 	MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
 	converter.setTargetType(MessageType.TEXT);
 	converter.setTypeIdPropertyName("_type");
+	converter.setObjectMapper(mapper);
 	return converter;
     }
 
